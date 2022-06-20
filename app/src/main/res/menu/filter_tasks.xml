@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/filter_all" />
+    <item
+        android:id="@+id/active"
+        android:title="@string/filter_active" />
+    <item
+        android:id="@+id/completed"
+        android:title="@string/filter_completed" />
+</menu>

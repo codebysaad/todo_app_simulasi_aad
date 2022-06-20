@@ -1,0 +1,25 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Belajar AAD",
+      "description": "Belajar dasar-dasar materi di kelas Dicoding",
+      "dueDate": 1577811600000,
+      "completed": false
+    },
+    {
+      "id": 2,
+      "title": "Simulasi Ujian AAD",
+      "description": "Mencoba mengerjakan project latihan AAD",
+      "dueDate": 1655226000000,
+      "completed": true
+    },
+    {
+      "id": 3,
+      "title": "Ambil Ujian AAD",
+      "description": "Saatnya menjadi Associate Android Developer!",
+      "dueDate": 1735578000000,
+      "completed": false
+    }
+  ]
+}
