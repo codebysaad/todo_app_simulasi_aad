@@ -1,7 +1,9 @@
 package com.dicoding.todoapp.ui.detail
 
 import android.os.Bundle
+import android.text.Editable
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.todoapp.R
@@ -20,24 +22,40 @@ class DetailTaskActivity : AppCompatActivity() {
 
         //TODO 11 : Show detail task and implement delete action
         val btnDelete = findViewById<Button>(R.id.btn_delete_task)
-        val edtTitle = findViewById<TextInputEditText>(R.id.detail_ed_title)
-        val edtDesc = findViewById<TextInputEditText>(R.id.detail_ed_description)
-        val edtDueDate = findViewById<TextInputEditText>(R.id.detail_ed_due_date)
+        val detailEdTitle = findViewById<TextInputEditText>(R.id.detail_ed_title)
+        val detailEdDescription = findViewById<TextInputEditText>(R.id.detail_ed_description)
+        val detailEdDueDate = findViewById<TextInputEditText>(R.id.detail_ed_due_date)
 
-        val taskId = intent.getStringExtra(TASK_ID)?.toInt()
+        val taskId = intent.getIntExtra(TASK_ID, 0)
 
-        val factoryModel = ViewModelFactory.getInstance(this)
-        viewModel = ViewModelProvider(this, factoryModel) [
-            DetailTaskViewModel::class.java
-        ]
+        val factory = ViewModelFactory.getInstance(this)
+        viewModel = ViewModelProvider(this, factory).get(DetailTaskViewModel::class.java)
+        viewModel.apply {
+            setTaskId(taskId)
+            task.observe(this@DetailTaskActivity) {
+                detailEdTitle.text = Editable.Factory.getInstance().newEditable(it.title)
+                detailEdDescription.text =
+                    Editable.Factory.getInstance().newEditable(it.description)
+                detailEdDueDate.text = Editable.Factory
+                    .getInstance()
+                    .newEditable(DateConverter.convertMillisToString(it.dueDateMillis))
+            }
 
-        viewModel.setTaskId(taskId)
+            showToast.observe(this@DetailTaskActivity) { event ->
+                val message = event.getContentIfNotHandled()
+                message?.let {
+                    Toast.makeText(this@DetailTaskActivity, it, Toast.LENGTH_SHORT).show()
+                }
+            }
 
-        viewModel.task.observe(this) { task ->
-            if (task != null) {
-                edtTitle.setText(task.title)
-                edtDesc.setText(task.description)
-                edtDueDate.setText(DateConverter.convertMillisToString(task.dueDateMillis))
+            deletedTask.observe(this@DetailTaskActivity) { event ->
+                val savedContent = event.getContentIfNotHandled()
+                savedContent?.let {
+                    if (it) {
+                        viewModel.task.removeObservers(this@DetailTaskActivity)
+                        finish()
+                    }
+                }
             }
         }
 
